@@ -43,7 +43,7 @@ const skg = {
   },
   CreateSecretKey: async (props: CreateSecretKeyProp) => {
     try {
-      const response = await api.post("/skg", props);
+      const response = await api.post("/skg", props as CreateSecretKeyProp);
       return response.data as CreateSecretKeyResponse;
     } catch (error) {
       return console.log(error);
