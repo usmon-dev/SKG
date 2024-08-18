@@ -52,14 +52,14 @@ const SKGContext = createContext({
   updateSecretKeyData: null as ResponseType | null,
   deleteSecretKeyData: null as ResponseType | null,
   secretKeyGenerator: async () => {},
-  createSecretKey: async (prop: CreateSecretKeyProp) => {},
+  createSecretKey: async (prop: CreateSecretKeyProp) => {prop},
   getSecretKeys: async () => {},
-  getSecretKey: async (props: { id: string }) => {},
+  getSecretKey: async (props: { id: string }) => {props},
   updateSecretKey: async (props: {
     id: string;
     data: UpdateSecretKeyProp;
-  }) => {},
-  deleteSecretKey: async (id: { id: string }) => {},
+  }) => {props},
+  deleteSecretKey: async (id: { id: string }) => {id},
 });
 
 export const useSKG = () => useContext(SKGContext);

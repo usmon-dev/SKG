@@ -42,15 +42,15 @@ interface LoginError {
 }
 
 const UserContext = createContext({
-  registerUser: async (props: User) => {},
-  loginUser: async (props: LoginUserProps) => {},
+  registerUser: async (props: User) => {props},
+  loginUser: async (props: LoginUserProps) => {props},
   getMyself: async () => {},
-  updateMyself: async (props: User) => {},
+  updateMyself: async (props: User) => {props},
   deleteMyself: async () => {},
   getUsers: async () => {},
-  getUserById: async (id: string) => {},
-  updateUser: async (id: string, props: User) => {},
-  deleteUser: async (id: string) => {},
+  getUserById: async (id: string) => {id},
+  updateUser: async (id: string, props: User) => {{id} {props}},
+  deleteUser: async (id: string) => {id},
   registerUserData: null as RegisterUserResponse | RegisterUserAlerts | RegisterError | null,
   loginUserData: null as LoginSuccess | LoginUserAlerts | LoginError | null,
   getMyselfData: null as User | { message: string } | null,
