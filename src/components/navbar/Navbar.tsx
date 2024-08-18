@@ -1,7 +1,7 @@
 "use client"
 
 import { Typography } from "@mui/joy"
-import ProfileMenu from "./ProfileMenu"
+import ProfileMenu from "./profileMenu"
 
 function Navbar() {
   return (

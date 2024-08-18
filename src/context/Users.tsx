@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 import users from "../services/api/skg/users.api.service";
+import { getCookie, setCookie } from "../utils/defaults";
 interface User {
   id: string;
   name: string;
@@ -41,77 +42,99 @@ interface LoginError {
   error: unknown;
 }
 
+interface ResponseType {
+  isLoading: boolean;
+  data:
+    | User
+    | User[]
+    | { message: string }
+    | RegisterUserResponse
+    | RegisterUserAlerts
+    | RegisterError
+    | LoginSuccess
+    | LoginUserAlerts
+    | LoginError
+    | null
+    | [];
+}
+
 const UserContext = createContext({
-  registerUser: async (props: User) => {props},
-  loginUser: async (props: LoginUserProps) => {props},
+  registerUser: async (props: User) => {
+    props;
+  },
+  loginUser: async (props: LoginUserProps) => {
+    props;
+  },
   getMyself: async () => {},
-  updateMyself: async (props: User) => {props},
+  updateMyself: async (props: User) => {
+    props;
+  },
   deleteMyself: async () => {},
   getUsers: async () => {},
-  getUserById: async (id: string) => {id},
-  updateUser: async (id: string, props: User) => {{id} {props}},
-  deleteUser: async (id: string) => {id},
-  registerUserData: null as RegisterUserResponse | RegisterUserAlerts | RegisterError | null,
-  loginUserData: null as LoginSuccess | LoginUserAlerts | LoginError | null,
-  getMyselfData: null as User | { message: string } | null,
-  updateMyselfData: null as { message: string } | null,
-  deleteMyselfData: null as { message: string } | null,
-  getUsersData: null as User[] | { message: string } | null,
-  getUserByIdData: null as User | { message: string } | null,
-  updateUserData: null as { message: string } | null,
-  deleteUserData: null as { message: string } | null,
+  getUserById: async (id: string) => {
+    id;
+  },
+  updateUser: async (id: string, props: User) => {
+    {
+      id;
+    }
+    {
+      props;
+    }
+  },
+  deleteUser: async (id: string) => {
+    id;
+  },
+  registerUserData: null as ResponseType | null,
+  loginUserData: null as ResponseType | null,
+  getMyselfData: null as ResponseType | null,
+  updateMyselfData: null as ResponseType | null,
+  deleteMyselfData: null as ResponseType | null,
+  getUsersData: null as User[] | ResponseType | null,
+  getUserByIdData: null as User | ResponseType | null,
+  updateUserData: null as ResponseType | null,
+  deleteUserData: null as ResponseType | null,
 });
 export const useUser = () => useContext(UserContext);
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [registerUserData, setRegisterUserData] = useState<
-    RegisterUserResponse | RegisterUserAlerts | RegisterError | null
-  >(null);
-  const [loginUserData, setLoginUserData] = useState<
-    LoginSuccess | LoginUserAlerts | LoginError | null
-  >(null);
-  const [getMyselfData, setGetMyselfData] = useState<
-    | User
-    | { message: "User not found" }
-    | { message: "Error fetching user" }
-    | null
-  >(null);
-  const [updateMyselfData, setUpdateMyselfData] = useState<
-    | { message: "User updated successfully" }
-    | { message: "Error updating user" }
-    | null
-  >(null);
-  const [deleteMyselfData, setDeleteMyselfData] = useState<
-    | { message: "User deleted successfully" }
-    | { message: "Error deleting user" }
-    | null
-  >(null);
-  const [getUsersData, setGetUsersData] = useState<
-    User[] | { message: "Error fetching users" } | null
-  >(null);
-  const [getUserByIdData, setGetUserByIdData] = useState<
-    | User
-    | { message: "User not found" }
-    | { message: "Error fetching user" }
-    | null
-  >(null);
-  const [updateUserData, setUpdateUserData] = useState<
-    | { message: "User updated successfully" }
-    | { message: "Error updating user" }
-    | null
-  >(null);
-  const [deleteUserData, setDeleteUserData] = useState<
-    | { message: "User deleted successfully" }
-    | { message: "Error deleting user" }
-    | null
-  >(null);
+  const [registerUserData, setRegisterUserData] = useState<ResponseType | null>(
+    null
+  );
+  const [loginUserData, setLoginUserData] = useState<ResponseType | null>(null);
+  const [getMyselfData, setGetMyselfData] = useState<ResponseType | null>(null);
+  const [updateMyselfData, setUpdateMyselfData] = useState<ResponseType | null>(
+    null
+  );
+  const [deleteMyselfData, setDeleteMyselfData] = useState<ResponseType | null>(
+    null
+  );
+  const [getUsersData, setGetUsersData] = useState<ResponseType | null>(null);
+  const [getUserByIdData, setGetUserByIdData] = useState<ResponseType | null>(
+    null
+  );
+  const [updateUserData, setUpdateUserData] = useState<ResponseType | null>(
+    null
+  );
+  const [deleteUserData, setDeleteUserData] = useState<ResponseType | null>(
+    null
+  );
+
   const registerUser = async (props: User) => {
     try {
+      setRegisterUserData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.RegisterUser(props);
       if (response) {
-        setRegisterUserData(
-          response as RegisterUserResponse | RegisterUserAlerts | RegisterError
-        );
+        setRegisterUserData({
+          data: response as
+            | RegisterUserResponse
+            | RegisterUserAlerts
+            | RegisterError,
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from RegisterUser");
       }
@@ -122,11 +145,20 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const loginUser = async (data: LoginUserProps) => {
     try {
+      setLoginUserData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.LoginUser(data);
       if (response) {
-        setLoginUserData(
-          response as LoginSuccess | LoginUserAlerts | LoginError
-        );
+        setLoginUserData({
+          data: response as LoginSuccess | LoginUserAlerts | LoginError,
+          isLoading: false,
+        });
+
+        if ("token" in response) {
+          setCookie("authToken", response.token);
+        }
       } else {
         throw new Error("Invalid response from LoginUser");
       }
@@ -137,14 +169,19 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const getMyself = async () => {
     try {
+      setGetMyselfData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.GetMyself();
       if (response) {
-        setGetMyselfData(
-          response as
+        setGetMyselfData({
+          data: response as
             | User
             | { message: "User not found" }
-            | { message: "Error fetching user" }
-        );
+            | { message: "Error fetching user" },
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from GetMyself");
       }
@@ -155,13 +192,18 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const updateMyself = async (data: User) => {
     try {
+      setUpdateMyselfData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.UpdateMyself(data);
       if (response) {
-        setUpdateMyselfData(
-          response as
+        setUpdateMyselfData({
+          data: response as
             | { message: "User updated successfully" }
-            | { message: "Error updating user" }
-        );
+            | { message: "Error updating user" },
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from UpdateMyself");
       }
@@ -172,13 +214,18 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const deleteMyself = async () => {
     try {
+      setDeleteMyselfData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.DeleteMySelf();
       if (response) {
-        setDeleteMyselfData(
-          response as
+        setDeleteMyselfData({
+          isLoading: false,
+          data: response as
             | { message: "User deleted successfully" }
-            | { message: "Error deleting user" }
-        );
+            | { message: "Error deleting user" },
+        });
       } else {
         throw new Error("Invalid response from DeleteMyself");
       }
@@ -189,11 +236,16 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const getUsers = async () => {
     try {
+      setGetMyselfData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.GetUsers();
       if (response) {
-        setGetUsersData(
-          response as User[] | { message: "Error fetching users" }
-        );
+        setGetUsersData({
+          isLoading: false,
+          data: response as User[] | { message: "Error fetching users" },
+        });
       } else {
         throw new Error("Invalid response from GetUsers");
       }
@@ -204,14 +256,19 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const getUserById = async (id: string) => {
     try {
+      setGetUserByIdData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.GetUserById(id);
       if (response) {
-        setGetUserByIdData(
-          response as
+        setGetUserByIdData({
+          isLoading: false,
+          data: response as
             | User
             | { message: "User not found" }
-            | { message: "Error fetching user" }
-        );
+            | { message: "Error fetching user" },
+        });
       } else {
         throw new Error("Invalid response from GetUserById");
       }
@@ -222,13 +279,18 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const updateUser = async (id: string, data: User) => {
     try {
+      setUpdateUserData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.UpdateUser(id, data);
       if (response) {
-        setUpdateUserData(
-          response as
+        setUpdateUserData({
+          isLoading: false,
+          data: response as
             | { message: "User updated successfully" }
-            | { message: "Error updating user" }
-        );
+            | { message: "Error updating user" },
+        });
       } else {
         throw new Error("Invalid response from UpdateUser");
       }
@@ -239,13 +301,18 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const deleteUser = async (id: string) => {
     try {
+      setDeleteMyselfData({
+        isLoading: true,
+        data: null,
+      });
       const response = await users.DeleteUser(id);
       if (response) {
-        setDeleteUserData(
-          response as
+        setDeleteUserData({
+          isLoading: false,
+          data: response as
             | { message: "User deleted successfully" }
-            | { message: "Error deleting user" }
-        );
+            | { message: "Error deleting user" },
+        });
       } else {
         throw new Error("Invalid response from DeleteUser");
       }
@@ -254,6 +321,12 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setDeleteUserData(null);
     }
   };
+
+  useEffect(() => {
+    if (getCookie("authToken").trim() !== "") {
+      getMyself();
+    }
+  }, [getCookie("authToken")]);
   return (
     <UserContext.Provider
       value={{
@@ -282,4 +355,4 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default UserProvider
+export default UserProvider;

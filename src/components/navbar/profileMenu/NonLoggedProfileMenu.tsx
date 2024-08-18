@@ -4,15 +4,16 @@ import {
   Avatar,
   Divider,
   Dropdown,
-  ListItem,
   ListItemDecorator,
   Menu,
   MenuButton,
   MenuItem,
 } from "@mui/joy";
-import { Settings, LogoutRounded } from "@mui/icons-material";
+import { LoginRounded } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
-function ProfileMenu() {
+function NonLoggedProfileMenu() {
+  const navigate = useNavigate();
   return (
     <Dropdown>
       <MenuButton
@@ -31,28 +32,26 @@ function ProfileMenu() {
           gap: 1,
         }}
       >
-        <ListItem>Usmon Reyimberganov</ListItem>
+        <MenuItem onClick={() => navigate("/login")}>
+          <ListItemDecorator>
+            <LoginRounded />
+          </ListItemDecorator>
+          Sign in
+        </MenuItem>
         <Divider
           sx={{
             margin: "0px 15px",
           }}
         />
-
-        <MenuItem>
+        <MenuItem onClick={() => navigate("/register")}>
           <ListItemDecorator>
-            <Settings />
+            <LoginRounded />
           </ListItemDecorator>
-          Settings
-        </MenuItem>
-        <MenuItem color="danger">
-          <ListItemDecorator>
-            <LogoutRounded />
-          </ListItemDecorator>
-          Log out
+          Sign up
         </MenuItem>
       </Menu>
     </Dropdown>
   );
 }
 
-export default ProfileMenu;
+export default NonLoggedProfileMenu;
