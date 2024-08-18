@@ -1,9 +1,51 @@
 "use client";
 
-import { Button, Input, Link, Stack, Typography } from "@mui/joy";
-import { Key } from "@mui/icons-material";
+import { Button, IconButton, Input, Link, Stack, Typography } from "@mui/joy";
+import {
+  Key,
+  Loop,
+  Visibility,
+  VisibilityOff,
+  ContentCopy,
+  Check,
+} from "@mui/icons-material";
+import { useSKG } from "../../context/SKG";
+import { useState } from "react";
 
 function SKG() {
+  interface SecretKeyGeneratorResponse {
+    secretKey: string;
+  }
+  const { secretKeyGenerator, secretKeyGeneratorData } = useSKG();
+  const [secretKey, setSecretKey] = useState<SecretKeyGeneratorResponse>({
+    secretKey: "",
+  });
+  const [isCopied, setIsCopied] = useState(false);
+  const [showSecret, setShowSecret] = useState<boolean>(true);
+
+  const handleSecretKeyGenerator = async () => {
+    try {
+      await secretKeyGenerator();
+      const data = secretKeyGeneratorData?.data;
+      if (data && "secretKey" in data) {
+        setSecretKey(data as SecretKeyGeneratorResponse);
+        setIsCopied(false);
+      } else {
+        setSecretKey({ secretKey: "" });
+      }
+    } catch (error) {
+      console.error("Error generating secret key:", error);
+    }
+  };
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(secretKey.secretKey);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
+
   return (
     <Stack
       spacing={7}
@@ -18,12 +60,37 @@ function SKG() {
     >
       <Typography level="h1">Secret Key Generator</Typography>
       <Input
+        type={showSecret ? "text" : "password"}
         readOnly
         startDecorator={<Key />}
-        endDecorator={<Button>Generate</Button>}
+        value={secretKey.secretKey || ""}
+        endDecorator={
+          !secretKey?.secretKey ? (
+            <Button
+              onClick={handleSecretKeyGenerator}
+              disabled={secretKeyGeneratorData?.isLoading}
+            >
+              {secretKeyGeneratorData?.isLoading ? "Loading..." : "Generate"}
+            </Button>
+          ) : (
+            <Stack spacing={0.1} direction="row">
+              <IconButton onClick={() => handleCopyToClipboard()}>
+                {isCopied ? <Check /> : <ContentCopy />}
+              </IconButton>
+              <IconButton onClick={() => setShowSecret(!showSecret)}>
+                {!showSecret ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+              <IconButton
+                onClick={handleSecretKeyGenerator}
+                disabled={secretKeyGeneratorData?.isLoading}
+              >
+                <Loop />
+              </IconButton>
+            </Stack>
+          )
+        }
         sx={{
           width: "500px",
-
           "@media (max-width: 600px)": {
             width: "90%",
           },
@@ -31,8 +98,8 @@ function SKG() {
         placeholder="Tap Generate to generate a secret key"
       />
       <Typography>
-        Do you want to save your secret key? <Link>Sign in</Link> or{" "}
-        <Link>Sign up</Link>
+        Do you want to save your secret key? <Link href="#">Sign in</Link> or{" "}
+        <Link href="#">Sign up</Link>
       </Typography>
     </Stack>
   );

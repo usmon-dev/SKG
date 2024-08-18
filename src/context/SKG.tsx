@@ -31,44 +31,66 @@ interface UpdateSecretKeyResponse {
   userId: string;
 }
 
+interface ResponseType {
+  isLoading: boolean;
+  data:
+    | SecretKeyGeneratorResponse
+    | CreateSecretKeyResponse
+    | GetSecretKeyResponse
+    | GetSecretKeyResponse[]
+    | UpdateSecretKeyResponse
+    | { message: string }
+    | null
+    | [];
+}
+
 const SKGContext = createContext({
-  secretKeyGeneratorData: null as SecretKeyGeneratorResponse | null,
-  createSecretKeyData: undefined as CreateSecretKeyResponse | undefined,
-  getSecretKeysData: [] as GetSecretKeyResponse[],
-  getSecretKeyData: null as GetSecretKeyResponse | null,
-  updateSecretKeyData: null as UpdateSecretKeyResponse | null,
-  deleteSecretKeyData: null as { message: string } | null,
+  secretKeyGeneratorData: null as ResponseType | null,
+  createSecretKeyData: undefined as ResponseType | undefined,
+  getSecretKeysData: null as ResponseType | null,
+  getSecretKeyData: null as ResponseType | null,
+  updateSecretKeyData: null as ResponseType | null,
+  deleteSecretKeyData: null as ResponseType | null,
   secretKeyGenerator: async () => {},
   createSecretKey: async (prop: CreateSecretKeyProp) => {},
   getSecretKeys: async () => {},
-  getSecretKey: async (props: {id: string}) => {},
-  updateSecretKey: async (props: { id: string; data: UpdateSecretKeyProp; }) => {},
-  deleteSecretKey: async (id: {id: string}) => {},
+  getSecretKey: async (props: { id: string }) => {},
+  updateSecretKey: async (props: {
+    id: string;
+    data: UpdateSecretKeyProp;
+  }) => {},
+  deleteSecretKey: async (id: { id: string }) => {},
 });
 
 export const useSKG = () => useContext(SKGContext);
 
 const SKGProvider = ({ children }: { children: React.ReactNode }) => {
   const [secretKeyGeneratorData, setSecretKeyGeneratorData] =
-    useState<SecretKeyGeneratorResponse | null>(null);
+    useState<ResponseType | null>(null);
   const [createSecretKeyData, setCreateSecretKeyData] = useState<
-    CreateSecretKeyResponse | undefined
+    ResponseType | undefined
   >(undefined);
-  const [getSecretKeysData, setGetSecretKeysData] = useState<
-    GetSecretKeyResponse[] | []
-  >([]);
-  const [getSecretKeyData, setGetSecretKeyData] =
-    useState<GetSecretKeyResponse | null>(null);
+  const [getSecretKeysData, setGetSecretKeysData] =
+    useState<ResponseType | null>(null);
+  const [getSecretKeyData, setGetSecretKeyData] = useState<ResponseType | null>(
+    null
+  );
   const [updateSecretKeyData, setUpdateSecretKeyData] =
-    useState<UpdateSecretKeyResponse | null>(null);
-  const [deleteSecretKeyData, setDeleteSecretKeyData] = useState<{
-    message: string;
-  } | null>(null);
+    useState<ResponseType | null>(null);
+  const [deleteSecretKeyData, setDeleteSecretKeyData] =
+    useState<ResponseType | null>(null);
   const secretKeyGenerator = async () => {
     try {
+      setSecretKeyGeneratorData({
+        isLoading: true,
+        data: null,
+      });
       const response = await skg.SecretKeyGenerator();
       if (response) {
-        setSecretKeyGeneratorData(response as SecretKeyGeneratorResponse);
+        setSecretKeyGeneratorData({
+          data: response as SecretKeyGeneratorResponse,
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from SecretKeyGenerator");
       }
@@ -77,12 +99,18 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
       setSecretKeyGeneratorData(null);
     }
   };
-
   const createSecretKey = async (props: CreateSecretKeyProp) => {
     try {
+      setCreateSecretKeyData({
+        isLoading: true,
+        data: null,
+      });
       const response = await skg.CreateSecretKey(props);
       if (response) {
-        setCreateSecretKeyData(response as CreateSecretKeyResponse);
+        setCreateSecretKeyData({
+          data: response as CreateSecretKeyResponse,
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from CreateSecretKey");
       }
@@ -94,23 +122,37 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getSecretKeys = async () => {
     try {
+      setGetSecretKeysData({
+        isLoading: true,
+        data: [],
+      });
       const response = await skg.GetSecretKeys();
       if (response) {
-        setGetSecretKeysData(response as GetSecretKeyResponse[]);
+        setGetSecretKeysData({
+          data: response as GetSecretKeyResponse[],
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from GetSecretKeys");
       }
     } catch (err) {
       console.error("Error generating secret key:", err);
-      setGetSecretKeysData([]);
+      setGetSecretKeysData(null);
     }
   };
 
   const getSecretKey = async (props: { id: string }) => {
     try {
+      setGetSecretKeyData({
+        isLoading: true,
+        data: null,
+      });
       const response = await skg.GetSecretKey(props.id);
       if (response) {
-        setGetSecretKeyData(response as GetSecretKeyResponse);
+        setGetSecretKeyData({
+          data: response as GetSecretKeyResponse,
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from GetSecretKey");
       }
@@ -124,9 +166,16 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
     data: UpdateSecretKeyProp;
   }) => {
     try {
+      setUpdateSecretKeyData({
+        isLoading: true,
+        data: null,
+      });
       const response = await skg.UpdateSecretKey(props.id, props.data);
       if (response) {
-        setUpdateSecretKeyData(response as UpdateSecretKeyResponse);
+        setUpdateSecretKeyData({
+          data: response as UpdateSecretKeyResponse,
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from UpdateSecretKey");
       }
@@ -137,9 +186,16 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const deleteSecretKey = async (props: { id: string }) => {
     try {
+      setDeleteSecretKeyData({
+        isLoading: true,
+        data: null,
+      });
       const response = await skg.DeleteSecretKey(props.id);
       if (response) {
-        setDeleteSecretKeyData(response as { message: string });
+        setDeleteSecretKeyData({
+          data: response as { message: string },
+          isLoading: false,
+        });
       } else {
         throw new Error("Invalid response from DeleteSecretKey");
       }
