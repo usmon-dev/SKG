@@ -65,9 +65,9 @@ const skg = {
       return console.log(error);
     }
   },
-  UpdateSecretKey: async (id: string, props: UpdateSecretKeyProp) => {
+  UpdateSecretKey: async (id: string, data: UpdateSecretKeyProp) => {
     try {
-      const response = await api.put(`/skg/${id}`, props);
+      const response = await api.put(`/skg/${id}`, data);
       return response.data as UpdateSecretKeyResponse;
     } catch (error) {
       return console.log(error);
@@ -76,7 +76,7 @@ const skg = {
   DeleteSecretKey: async (id: string) => {
     try {
       const response = await api.delete(`/skg/${id}`);
-      return response.data;
+      return response.data as { message: string };
     } catch (error) {
       return console.log(error);
     }
