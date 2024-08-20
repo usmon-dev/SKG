@@ -36,11 +36,14 @@ function Login() {
     error: unknown;
   }
 
-  const loginResponse = loginUserData?.data as
-    | LoginSuccess
+  const loginResponse = loginUserData?.data as LoginSuccess | null;
+  const loginError = loginUserData?.response as
     | LoginUserAlerts
     | LoginError
     | null;
+
+    console.log(loginUserData?.response);
+    
 
   const navigate = useNavigate();
 
@@ -98,25 +101,25 @@ function Login() {
             gap: "30px",
           }}
         >
-          <FormControl error={loginResponse?.message === "Invalid credentials"}>
+          <FormControl error={loginError?.message === "Invalid credentials"}>
             <FormLabel>Username</FormLabel>
             <Input
               name="username"
               onChange={handleInput}
               placeholder="Enter Username"
             />
-            {loginResponse?.message === "Invalid credentials" && (
+            {loginError?.message === "Invalid credentials" && (
               <FormHelperText>Invalid username or password</FormHelperText>
             )}
           </FormControl>
-          <FormControl error={loginResponse?.message === "Invalid credentials"}>
+          <FormControl error={loginError?.message === "Invalid credentials"}>
             <FormLabel>Password</FormLabel>
             <Input
               name="password"
               onChange={handleInput}
               placeholder="Enter Password"
             />
-            {loginResponse?.message === "Invalid credentials" && (
+            {loginError?.message === "Invalid credentials" && (
               <FormHelperText>Invalid username or password</FormHelperText>
             )}
           </FormControl>

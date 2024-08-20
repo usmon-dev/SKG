@@ -52,15 +52,7 @@ interface ResponseType {
     | LoginSuccess
     | null
     | [];
-  response?: {
-    data:
-      | RegisterUserAlerts
-      | RegisterError
-      | LoginUserAlerts
-      | LoginError
-      | { message: string }
-      | null;
-  };
+  response?: unknown | null;
 }
 
 const UserContext = createContext({
@@ -125,18 +117,28 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     null
   );
 
-  const registerUser = async (props: User) => {
+
+  const registerUser = async (data: User) => {
     try {
       setRegisterUserData({
         isLoading: true,
       });
-      const response = await users.RegisterUser(props);
-      if (response) {
+      const response = await users.RegisterUser(data);
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setRegisterUserData({
           data: response as RegisterUserResponse,
           isLoading: false,
-          response: { data: response as RegisterUserAlerts | RegisterError },
+          response: response.response.data,
         });
+        if ("token" in response) {
+          setCookie("authToken", response.token);
+        }
       } else {
         throw new Error("Invalid response from RegisterUser");
       }
@@ -145,17 +147,25 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setRegisterUserData(null);
     }
   };
+
   const loginUser = async (data: LoginUserProps) => {
     try {
       setLoginUserData({
         isLoading: true,
       });
       const response = await users.LoginUser(data);
-      if (response) {
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setLoginUserData({
           data: response as LoginSuccess,
           isLoading: false,
-          response: { data: response as LoginUserAlerts | LoginError },
+          response: response.response.data,
         });
 
         if ("token" in response) {
@@ -169,21 +179,31 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setLoginUserData(null);
     }
   };
+
   const getMyself = async () => {
     try {
       setGetMyselfData({
         isLoading: true,
       });
       const response = await users.GetMyself();
-      if (response) {
+
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setGetMyselfData({
           data: response as User,
           isLoading: false,
-          response: {
-            data: response as
-              | { message: "User not found" }
-              | { message: "Error fetching user" },
-          },
+
+
+
+
+
+          response: response.response.data,
         });
       } else {
         throw new Error("Invalid response from GetMyself");
@@ -193,18 +213,28 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setGetMyselfData(null);
     }
   };
+
   const updateMyself = async (data: User) => {
     try {
       setUpdateMyselfData({
         isLoading: true,
-        data: null,
+
       });
       const response = await users.UpdateMyself(data);
-      if (response) {
+
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setUpdateMyselfData({
           data: response as { message: "User updated successfully" },
           isLoading: false,
-          response: { data: response as { message: "Error updating user" } },
+
+          response: response.response.data,
         });
       } else {
         throw new Error("Invalid response from UpdateMyself");
@@ -214,18 +244,29 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUpdateMyselfData(null);
     }
   };
+
   const deleteMyself = async () => {
     try {
       setDeleteMyselfData({
         isLoading: true,
-        data: null,
+
       });
       const response = await users.DeleteMySelf();
-      if (response) {
+
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setDeleteMyselfData({
-          isLoading: false,
           data: response as { message: "User deleted successfully" },
-          response: { data: response as { message: "Error deleting user" } },
+          isLoading: false,
+
+
+          response: response.response.data,
         });
       } else {
         throw new Error("Invalid response from DeleteMyself");
@@ -235,20 +276,32 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setDeleteMyselfData(null);
     }
   };
+
   const getUsers = async () => {
     try {
-      setGetMyselfData({
+
+      setGetUsersData({
         isLoading: true,
-        data: null,
+
       });
       const response = await users.GetUsers();
-      if (response) {
+
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setGetUsersData({
-          isLoading: false,
           data: response as User[],
-          response: {
-            data: response as { message: "Error fetching users" },
-          },
+          isLoading: false,
+
+
+
+
+          response: response.response.data,
         });
       } else {
         throw new Error("Invalid response from GetUsers");
@@ -258,22 +311,33 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setGetUsersData(null);
     }
   };
+
   const getUserById = async (id: string) => {
     try {
       setGetUserByIdData({
         isLoading: true,
-        data: null,
+
       });
       const response = await users.GetUserById(id);
-      if (response) {
+
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setGetUserByIdData({
-          isLoading: false,
           data: response as User,
-          response: {
-            data: response as
-              | { message: "Error fetching user" }
-              | { message: "User not found" },
-          },
+          isLoading: false,
+
+
+
+
+
+
+          response: response.response.data,
         });
       } else {
         throw new Error("Invalid response from GetUserById");
@@ -283,18 +347,29 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setGetUserByIdData(null);
     }
   };
+
   const updateUser = async (id: string, data: User) => {
     try {
       setUpdateUserData({
         isLoading: true,
-        data: null,
+
       });
       const response = await users.UpdateUser(id, data);
-      if (response) {
+
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setUpdateUserData({
-          isLoading: false,
           data: response as { message: "User updated successfully" },
-          response: { data: response as { message: "Error updating user" } },
+          isLoading: false,
+
+
+          response: response.response.data,
         });
       } else {
         throw new Error("Invalid response from UpdateUser");
@@ -304,18 +379,30 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUpdateUserData(null);
     }
   };
+
   const deleteUser = async (id: string) => {
     try {
-      setDeleteMyselfData({
+
+      setDeleteUserData({
         isLoading: true,
-        data: null,
+
       });
       const response = await users.DeleteUser(id);
-      if (response) {
+
+
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setDeleteUserData({
-          isLoading: false,
           data: response as { message: "User deleted successfully" },
-          response: { data: response as { message: "Error deleting user" } },
+          isLoading: false,
+
+
+          response: response.response.data,
         });
       } else {
         throw new Error("Invalid response from DeleteUser");
