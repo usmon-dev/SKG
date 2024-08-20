@@ -44,18 +44,23 @@ interface LoginError {
 
 interface ResponseType {
   isLoading: boolean;
-  data:
+  data?:
     | User
     | User[]
     | { message: string }
     | RegisterUserResponse
-    | RegisterUserAlerts
-    | RegisterError
     | LoginSuccess
-    | LoginUserAlerts
-    | LoginError
     | null
     | [];
+  response?: {
+    data:
+      | RegisterUserAlerts
+      | RegisterError
+      | LoginUserAlerts
+      | LoginError
+      | { message: string }
+      | null;
+  };
 }
 
 const UserContext = createContext({
@@ -124,16 +129,13 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setRegisterUserData({
         isLoading: true,
-        data: null,
       });
       const response = await users.RegisterUser(props);
       if (response) {
         setRegisterUserData({
-          data: response as
-            | RegisterUserResponse
-            | RegisterUserAlerts
-            | RegisterError,
+          data: response as RegisterUserResponse,
           isLoading: false,
+          response: { data: response as RegisterUserAlerts | RegisterError },
         });
       } else {
         throw new Error("Invalid response from RegisterUser");
@@ -147,13 +149,13 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setLoginUserData({
         isLoading: true,
-        data: null,
       });
       const response = await users.LoginUser(data);
       if (response) {
         setLoginUserData({
-          data: response as LoginSuccess | LoginUserAlerts | LoginError,
+          data: response as LoginSuccess,
           isLoading: false,
+          response: { data: response as LoginUserAlerts | LoginError },
         });
 
         if ("token" in response) {
@@ -171,16 +173,17 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setGetMyselfData({
         isLoading: true,
-        data: null,
       });
       const response = await users.GetMyself();
       if (response) {
         setGetMyselfData({
-          data: response as
-            | User
-            | { message: "User not found" }
-            | { message: "Error fetching user" },
+          data: response as User,
           isLoading: false,
+          response: {
+            data: response as
+              | { message: "User not found" }
+              | { message: "Error fetching user" },
+          },
         });
       } else {
         throw new Error("Invalid response from GetMyself");
@@ -199,10 +202,9 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await users.UpdateMyself(data);
       if (response) {
         setUpdateMyselfData({
-          data: response as
-            | { message: "User updated successfully" }
-            | { message: "Error updating user" },
+          data: response as { message: "User updated successfully" },
           isLoading: false,
+          response: { data: response as { message: "Error updating user" } },
         });
       } else {
         throw new Error("Invalid response from UpdateMyself");
@@ -222,9 +224,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (response) {
         setDeleteMyselfData({
           isLoading: false,
-          data: response as
-            | { message: "User deleted successfully" }
-            | { message: "Error deleting user" },
+          data: response as { message: "User deleted successfully" },
+          response: { data: response as { message: "Error deleting user" } },
         });
       } else {
         throw new Error("Invalid response from DeleteMyself");
@@ -244,7 +245,10 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (response) {
         setGetUsersData({
           isLoading: false,
-          data: response as User[] | { message: "Error fetching users" },
+          data: response as User[],
+          response: {
+            data: response as { message: "Error fetching users" },
+          },
         });
       } else {
         throw new Error("Invalid response from GetUsers");
@@ -264,10 +268,12 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (response) {
         setGetUserByIdData({
           isLoading: false,
-          data: response as
-            | User
-            | { message: "User not found" }
-            | { message: "Error fetching user" },
+          data: response as User,
+          response: {
+            data: response as
+              | { message: "Error fetching user" }
+              | { message: "User not found" },
+          },
         });
       } else {
         throw new Error("Invalid response from GetUserById");
@@ -287,9 +293,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (response) {
         setUpdateUserData({
           isLoading: false,
-          data: response as
-            | { message: "User updated successfully" }
-            | { message: "Error updating user" },
+          data: response as { message: "User updated successfully" },
+          response: { data: response as { message: "Error updating user" } },
         });
       } else {
         throw new Error("Invalid response from UpdateUser");
@@ -309,9 +314,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (response) {
         setDeleteUserData({
           isLoading: false,
-          data: response as
-            | { message: "User deleted successfully" }
-            | { message: "Error deleting user" },
+          data: response as { message: "User deleted successfully" },
+          response: { data: response as { message: "Error deleting user" } },
         });
       } else {
         throw new Error("Invalid response from DeleteUser");

@@ -56,6 +56,7 @@ const users = {
       const response = await api.post("/users/login", data);
       return response.data as LoginSuccess | LoginUserAlerts;
     } catch (error) {
+      console.log(error);
       return error as LoginError;
     }
   },

@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Sheet,
@@ -20,6 +21,26 @@ function Login() {
     username: "",
     password: "",
   });
+
+  interface LoginSuccess {
+    message: "Login successful";
+    token: string;
+  }
+
+  interface LoginUserAlerts {
+    message: "Invalid credentials";
+  }
+
+  interface LoginError {
+    message: "Error logging in";
+    error: unknown;
+  }
+
+  const loginResponse = loginUserData?.data as
+    | LoginSuccess
+    | LoginUserAlerts
+    | LoginError
+    | null;
 
   const navigate = useNavigate();
 
@@ -77,23 +98,36 @@ function Login() {
             gap: "30px",
           }}
         >
-          <FormControl>
+          <FormControl error={loginResponse?.message === "Invalid credentials"}>
             <FormLabel>Username</FormLabel>
             <Input
               name="username"
               onChange={handleInput}
               placeholder="Enter Username"
             />
+            {loginResponse?.message === "Invalid credentials" && (
+              <FormHelperText>Invalid username or password</FormHelperText>
+            )}
           </FormControl>
-          <FormControl>
+          <FormControl error={loginResponse?.message === "Invalid credentials"}>
             <FormLabel>Password</FormLabel>
             <Input
               name="password"
               onChange={handleInput}
               placeholder="Enter Password"
             />
+            {loginResponse?.message === "Invalid credentials" && (
+              <FormHelperText>Invalid username or password</FormHelperText>
+            )}
           </FormControl>
-          <Button type="submit">
+          <Button
+            disabled={
+              !userData.username.trim() ||
+              !userData.password.trim() ||
+              loginUserData?.isLoading
+            }
+            type="submit"
+          >
             {loginUserData?.isLoading ? "Loading..." : "Sign In"}
           </Button>
         </form>

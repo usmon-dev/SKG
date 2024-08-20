@@ -9,6 +9,7 @@ import {
   Menu,
   MenuButton,
   MenuItem,
+  Skeleton,
 } from "@mui/joy";
 import { Settings, LogoutRounded, Person } from "@mui/icons-material";
 import { useUser } from "../../../context/Users";
@@ -47,9 +48,15 @@ function LoggedProfileMenu() {
           gap: 1,
         }}
       >
-        <ListItem>
-          {user?.name} {user?.surname}
-        </ListItem>
+        {getMyselfData?.isLoading ? (
+          <ListItem>
+            <Skeleton variant="text" />
+          </ListItem>
+        ) : (
+          <ListItem>
+            {user?.name} {user?.surname}
+          </ListItem>
+        )}
         <Divider
           sx={{
             margin: "0px 15px",
