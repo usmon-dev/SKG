@@ -2,34 +2,14 @@
 
 import React, { createContext, useContext, useState } from "react";
 import skg from "../services/api/skg/skg.api.service";
-
-interface SecretKeyGeneratorResponse {
-  secretKey: string;
-}
-interface CreateSecretKeyProp {
-  title: string;
-}
-interface CreateSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
-interface GetSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
-interface UpdateSecretKeyProp {
-  title: string;
-}
-interface UpdateSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
+import {
+  CreateSecretKeyProp,
+  CreateSecretKeyResponse,
+  GetSecretKeyResponse,
+  SecretKeyGeneratorResponse,
+  UpdateSecretKeyProp,
+  UpdateSecretKeyResponse,
+} from "../utils/interfaces";
 
 interface ResponseType {
   isLoading: boolean;
@@ -52,14 +32,19 @@ const SKGContext = createContext({
   updateSecretKeyData: null as ResponseType | null,
   deleteSecretKeyData: null as ResponseType | null,
   secretKeyGenerator: async () => {},
-  createSecretKey: async (prop: CreateSecretKeyProp) => {prop},
+  createSecretKey: async (prop: CreateSecretKeyProp) => {
+    prop;
+  },
   getSecretKeys: async () => {},
-  getSecretKey: async (props: { id: string }) => {props},
-  updateSecretKey: async (props: {
-    id: string;
-    data: UpdateSecretKeyProp;
-  }) => {props},
-  deleteSecretKey: async (id: { id: string }) => {id},
+  getSecretKey: async (props: { id: string }) => {
+    props;
+  },
+  updateSecretKey: async (props: { id: string; data: UpdateSecretKeyProp }) => {
+    props;
+  },
+  deleteSecretKey: async (id: { id: string }) => {
+    id;
+  },
 });
 
 export const useSKG = () => useContext(SKGContext);
@@ -79,6 +64,7 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
     useState<ResponseType | null>(null);
   const [deleteSecretKeyData, setDeleteSecretKeyData] =
     useState<ResponseType | null>(null);
+
   const secretKeyGenerator = async () => {
     try {
       setSecretKeyGeneratorData({

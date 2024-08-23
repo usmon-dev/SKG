@@ -9,11 +9,14 @@ import {
   Input,
   Sheet,
   Typography,
+  IconButton,
 } from "@mui/joy";
 import { useUser } from "../../context/Users";
 import { useEffect, useState } from "react";
 import { isLoggedIn } from "../../utils/defaults";
 import { useNavigate } from "react-router-dom";
+import { LoginError, LoginUserAlerts } from "../../utils/interfaces";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function Login() {
   const { loginUser, loginUserData } = useUser();
@@ -21,29 +24,12 @@ function Login() {
     username: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
-//   interface LoginSuccess {
-//     message: "Login successful";
-//     token: string;
-//   }
-
-  interface LoginUserAlerts {
-    message: "Invalid credentials";
-  }
-
-  interface LoginError {
-    message: "Error logging in";
-    error: unknown;
-  }
-
-//   const loginResponse = loginUserData?.data as LoginSuccess | null;
   const loginError = loginUserData?.response as
     | LoginUserAlerts
     | LoginError
     | null;
-
-    console.log(loginUserData?.response);
-    
 
   const navigate = useNavigate();
 
@@ -53,6 +39,10 @@ function Login() {
       ...prevUserData,
       [name]: value,
     }));
+  };
+
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   useEffect(() => {
@@ -104,6 +94,7 @@ function Login() {
           <FormControl error={loginError?.message === "Invalid credentials"}>
             <FormLabel>Username</FormLabel>
             <Input
+              disabled={loginUserData?.isLoading}
               name="username"
               onChange={handleInput}
               placeholder="Enter Username"
@@ -115,9 +106,16 @@ function Login() {
           <FormControl error={loginError?.message === "Invalid credentials"}>
             <FormLabel>Password</FormLabel>
             <Input
+              disabled={loginUserData?.isLoading}
               name="password"
               onChange={handleInput}
               placeholder="Enter Password"
+              type={showPassword ? "text" : "password"}
+              endDecorator={
+                <IconButton onClick={handleTogglePassword}>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              }
             />
             {loginError?.message === "Invalid credentials" && (
               <FormHelperText>Invalid username or password</FormHelperText>
