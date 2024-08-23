@@ -120,8 +120,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const loginUser = async (data: LoginUserProps) => {
-    try {
+  const loginUser = async (data: LoginUserProps) => {    try {
       setLoginUserData({
         isLoading: true,
       });

@@ -1,51 +1,19 @@
+import {
+  LoginError,
+  LoginSuccess,
+  LoginUserAlerts,
+  LoginUserProps,
+  RegisterError,
+  RegisterUserAlerts,
+  RegisterUserResponse,
+  User,
+} from "../../../utils/interfaces";
 import { api } from "../api";
-
-interface User {
-  id: string;
-  name: string;
-  surname: string;
-  username: string;
-  password: string;
-  isAdmin?: boolean;
-}
-
-interface RegisterUserResponse {
-  message: "User registered successfully";
-  token: string;
-}
-
-interface RegisterUserAlerts {
-  message: "User already exists";
-}
-
-interface RegisterError {
-  message: "Error registering user";
-  error: unknown;
-}
-
-interface LoginUserProps {
-  username: string;
-  password: string;
-}
-
-interface LoginSuccess {
-  message: "Login successful";
-  token: string;
-}
-
-interface LoginUserAlerts {
-  message: "Invalid credentials";
-}
-
-interface LoginError {
-  message: "Error logging in";
-  error: unknown;
-}
 
 const users = {
   RegisterUser: async (props: User) => {
     try {
-      const response = await api.post("/users", props);
+      const response = await api.post("/users/register", props);
       return response.data as RegisterUserResponse | RegisterUserAlerts;
     } catch (error) {
       return error as RegisterError;

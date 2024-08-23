@@ -31,9 +31,9 @@ export interface UpdateSecretKeyResponse {
 }
 
 export interface User {
-  id: string;
+  id?: string;
   name: string;
-  surname: string;
+  surname?: string;
   username: string;
   password: string;
   isAdmin?: boolean;
