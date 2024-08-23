@@ -79,7 +79,7 @@ const users = {
   DeleteMySelf: async () => {
     try {
       const response = await api.delete("/users/myself");
-      return response.data as  { message: "User deleted successfully" };
+      return response.data as { message: "User deleted successfully" };
     } catch (error) {
       return error as { message: "Error deleting user" };
     }

@@ -22,10 +22,10 @@ function Login() {
     password: "",
   });
 
-  interface LoginSuccess {
-    message: "Login successful";
-    token: string;
-  }
+//   interface LoginSuccess {
+//     message: "Login successful";
+//     token: string;
+//   }
 
   interface LoginUserAlerts {
     message: "Invalid credentials";
@@ -36,7 +36,7 @@ function Login() {
     error: unknown;
   }
 
-  const loginResponse = loginUserData?.data as LoginSuccess | null;
+//   const loginResponse = loginUserData?.data as LoginSuccess | null;
   const loginError = loginUserData?.response as
     | LoginUserAlerts
     | LoginError

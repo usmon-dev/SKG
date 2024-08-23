@@ -4,43 +4,14 @@ import React, { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 import users from "../services/api/skg/users.api.service";
 import { getCookie, setCookie } from "../utils/defaults";
-interface User {
-  id: string;
-  name: string;
-  surname: string;
-  username: string;
-  password: string;
-  isAdmin?: boolean;
-}
-interface RegisterUserResponse {
-  message: "User registered successfully";
-  token: string;
-}
-interface RegisterUserAlerts {
-  message: "User already exists";
-}
-interface RegisterError {
-  message: "Error registering user";
-  error: unknown;
-}
-interface LoginUserProps {
-  username: string;
-  password: string;
-}
-
-interface LoginSuccess {
-  message: "Login successful";
-  token: string;
-}
-
-interface LoginUserAlerts {
-  message: "Invalid credentials";
-}
-
-interface LoginError {
-  message: "Error logging in";
-  error: unknown;
-}
+import {
+  LoginSuccess,
+  LoginUserProps,
+  RegisterUserResponse,
+  User,
+  UserDeleteSuccess,
+  UserUpdateSuccess,
+} from "../utils/interfaces";
 
 interface ResponseType {
   isLoading: boolean;
@@ -117,7 +88,6 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     null
   );
 
-
   const registerUser = async (data: User) => {
     try {
       setRegisterUserData({
@@ -132,15 +102,17 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setRegisterUserData({
-          data: response as RegisterUserResponse,
           isLoading: false,
           response: response.response.data,
+        });
+      } else {
+        setRegisterUserData({
+          data: response as RegisterUserResponse,
+          isLoading: false,
         });
         if ("token" in response) {
           setCookie("authToken", response.token);
         }
-      } else {
-        throw new Error("Invalid response from RegisterUser");
       }
     } catch (err) {
       console.error("Error registering user:", err);
@@ -163,16 +135,18 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setLoginUserData({
-          data: response as LoginSuccess,
           isLoading: false,
           response: response.response.data,
         });
-
+      } else {
+        setLoginUserData({
+          data: response as LoginSuccess,
+          isLoading: false,
+        });
         if ("token" in response) {
           setCookie("authToken", response.token);
+          console.log(response.token);
         }
-      } else {
-        throw new Error("Invalid response from LoginUser");
       }
     } catch (err) {
       console.error("Error logging in:", err);
@@ -186,8 +160,6 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         isLoading: true,
       });
       const response = await users.GetMyself();
-
-
       if (
         response &&
         "response" in response &&
@@ -196,17 +168,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setGetMyselfData({
-          data: response as User,
           isLoading: false,
-
-
-
-
-
           response: response.response.data,
         });
       } else {
-        throw new Error("Invalid response from GetMyself");
+        setGetMyselfData({
+          isLoading: false,
+          data: response as User,
+        });
       }
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -218,11 +187,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setUpdateMyselfData({
         isLoading: true,
-
       });
       const response = await users.UpdateMyself(data);
-
-
       if (
         response &&
         "response" in response &&
@@ -231,13 +197,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setUpdateMyselfData({
-          data: response as { message: "User updated successfully" },
           isLoading: false,
-
           response: response.response.data,
         });
       } else {
-        throw new Error("Invalid response from UpdateMyself");
+        setUpdateMyselfData({
+          data: response as UserUpdateSuccess,
+          isLoading: false,
+        });
       }
     } catch (err) {
       console.error("Error updating user:", err);
@@ -249,11 +216,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setDeleteMyselfData({
         isLoading: true,
-
       });
       const response = await users.DeleteMySelf();
-
-
       if (
         response &&
         "response" in response &&
@@ -262,14 +226,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setDeleteMyselfData({
-          data: response as { message: "User deleted successfully" },
           isLoading: false,
-
-
           response: response.response.data,
         });
       } else {
-        throw new Error("Invalid response from DeleteMyself");
+        setDeleteMyselfData({
+          data: response as UserDeleteSuccess,
+          isLoading: false,
+        });
       }
     } catch (err) {
       console.error("Error deleting user:", err);
@@ -279,14 +243,10 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getUsers = async () => {
     try {
-
       setGetUsersData({
         isLoading: true,
-
       });
       const response = await users.GetUsers();
-
-
       if (
         response &&
         "response" in response &&
@@ -295,16 +255,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setGetUsersData({
-          data: response as User[],
           isLoading: false,
-
-
-
-
           response: response.response.data,
         });
       } else {
-        throw new Error("Invalid response from GetUsers");
+        setGetUsersData({
+          data: response as User[],
+          isLoading: false,
+        });
       }
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -316,11 +274,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setGetUserByIdData({
         isLoading: true,
-
       });
       const response = await users.GetUserById(id);
-
-
       if (
         response &&
         "response" in response &&
@@ -329,18 +284,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setGetUserByIdData({
-          data: response as User,
           isLoading: false,
-
-
-
-
-
-
           response: response.response.data,
         });
       } else {
-        throw new Error("Invalid response from GetUserById");
+        setGetUserByIdData({
+          data: response as User,
+          isLoading: false,
+        });
       }
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -352,11 +303,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setUpdateUserData({
         isLoading: true,
-
       });
       const response = await users.UpdateUser(id, data);
-
-
       if (
         response &&
         "response" in response &&
@@ -365,14 +313,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setUpdateUserData({
-          data: response as { message: "User updated successfully" },
           isLoading: false,
-
-
           response: response.response.data,
         });
       } else {
-        throw new Error("Invalid response from UpdateUser");
+        setUpdateUserData({
+          data: response as UserUpdateSuccess,
+          isLoading: false,
+        });
       }
     } catch (err) {
       console.error("Error updating user:", err);
@@ -382,14 +330,10 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteUser = async (id: string) => {
     try {
-
       setDeleteUserData({
         isLoading: true,
-
       });
       const response = await users.DeleteUser(id);
-
-
       if (
         response &&
         "response" in response &&
@@ -398,14 +342,14 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         "data" in response.response
       ) {
         setDeleteUserData({
-          data: response as { message: "User deleted successfully" },
           isLoading: false,
-
-
           response: response.response.data,
         });
       } else {
-        throw new Error("Invalid response from DeleteUser");
+        setDeleteUserData({
+          data: response as UserDeleteSuccess,
+          isLoading: false,
+        });
       }
     } catch (err) {
       console.error("Error deleting user:", err);
