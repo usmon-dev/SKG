@@ -1,36 +1,17 @@
+import { ID } from "../../../utils/interfaces/interfaces";
+import {
+  CreateSecretKeyProp,
+  CreateSecretKeyResponse,
+  DeleteSecretKeyResponse,
+  GetSecretKeyResponse,
+  InternalServerError,
+  SecretKeyGeneratorResponse,
+  SecretKeyNotFound,
+  UnauthorizedAccess,
+  UpdateSecretKeyProp,
+  UpdateSecretKeyResponse,
+} from "../../../utils/interfaces/SKG";
 import { api } from "../api";
-
-interface SecretKeyGeneratorResponse {
-  secretKey: string;
-}
-
-interface CreateSecretKeyProp {
-  title: string;
-}
-interface CreateSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
-
-interface GetSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
-
-interface UpdateSecretKeyProp {
-  title: string;
-}
-
-interface UpdateSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
 
 const skg = {
   SecretKeyGenerator: async () => {
@@ -38,15 +19,15 @@ const skg = {
       const response = await api.post("/skg/generate");
       return response.data as SecretKeyGeneratorResponse;
     } catch (error) {
-      return console.log(error);
+      return error as InternalServerError;
     }
   },
   CreateSecretKey: async (props: CreateSecretKeyProp) => {
     try {
-      const response = await api.post("/skg", props as CreateSecretKeyProp);
+      const response = await api.post("/skg", props);
       return response.data as CreateSecretKeyResponse;
     } catch (error) {
-      return console.log(error);
+      return error as InternalServerError;
     }
   },
   GetSecretKeys: async () => {
@@ -54,31 +35,40 @@ const skg = {
       const response = await api.get("/skg");
       return response.data as GetSecretKeyResponse[];
     } catch (error) {
-      return console.log(error);
+      return error as InternalServerError;
     }
   },
-  GetSecretKey: async (id: string) => {
+  GetSecretKey: async (id: ID) => {
     try {
       const response = await api.get(`/skg/${id}`);
       return response.data as GetSecretKeyResponse;
     } catch (error) {
-      return console.log(error);
+      return error as
+        | InternalServerError
+        | SecretKeyNotFound
+        | UnauthorizedAccess;
     }
   },
-  UpdateSecretKey: async (id: string, data: UpdateSecretKeyProp) => {
+  UpdateSecretKey: async (id: ID, data: UpdateSecretKeyProp) => {
     try {
       const response = await api.put(`/skg/${id}`, data);
       return response.data as UpdateSecretKeyResponse;
     } catch (error) {
-      return console.log(error);
+      return error as
+        | InternalServerError
+        | SecretKeyNotFound
+        | UnauthorizedAccess;
     }
   },
-  DeleteSecretKey: async (id: string) => {
+  DeleteSecretKey: async (id: ID) => {
     try {
       const response = await api.delete(`/skg/${id}`);
-      return response.data as { message: string };
+      return response.data as DeleteSecretKeyResponse;
     } catch (error) {
-      return console.log(error);
+      return error as
+        | InternalServerError
+        | SecretKeyNotFound
+        | UnauthorizedAccess;
     }
   },
 };
