@@ -15,7 +15,7 @@ import { useUser } from "../../context/Users";
 import { useEffect, useState } from "react";
 import { isLoggedIn } from "../../utils/defaults";
 import { useNavigate } from "react-router-dom";
-import { LoginError, LoginUserAlerts } from "../../utils/interfaces/SKG";
+import { LoginError, LoginUserAlerts } from "../../utils/interfaces/Users";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function Login() {

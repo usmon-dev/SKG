@@ -10,6 +10,7 @@ import {
   UpdateSecretKeyProp,
   UpdateSecretKeyResponse,
 } from "../utils/interfaces/SKG";
+import { ID } from "../utils/interfaces/interfaces";
 
 interface ResponseType {
   isLoading: boolean;
@@ -36,13 +37,13 @@ const SKGContext = createContext({
     prop;
   },
   getSecretKeys: async () => {},
-  getSecretKey: async (props: { id: string }) => {
+  getSecretKey: async (props: ID) => {
     props;
   },
-  updateSecretKey: async (props: { id: string; data: UpdateSecretKeyProp }) => {
+  updateSecretKey: async (props: { id: ID; data: UpdateSecretKeyProp }) => {
     props;
   },
-  deleteSecretKey: async (id: { id: string }) => {
+  deleteSecretKey: async (id: ID) => {
     id;
   },
 });
@@ -127,13 +128,13 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const getSecretKey = async (props: { id: string }) => {
+  const getSecretKey = async (props: ID) => {
     try {
       setGetSecretKeyData({
         isLoading: true,
         data: null,
       });
-      const response = await skg.GetSecretKey(props.id);
+      const response = await skg.GetSecretKey(props);
       if (response) {
         setGetSecretKeyData({
           data: response as GetSecretKeyResponse,
@@ -148,7 +149,7 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
   const updateSecretKey = async (props: {
-    id: string;
+    id: ID;
     data: UpdateSecretKeyProp;
   }) => {
     try {
@@ -170,13 +171,13 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
       setUpdateSecretKeyData(null);
     }
   };
-  const deleteSecretKey = async (props: { id: string }) => {
+  const deleteSecretKey = async (props: ID) => {
     try {
       setDeleteSecretKeyData({
         isLoading: true,
         data: null,
       });
-      const response = await skg.DeleteSecretKey(props.id);
+      const response = await skg.DeleteSecretKey(props);
       if (response) {
         setDeleteSecretKeyData({
           data: response as { message: string },

@@ -19,7 +19,7 @@ import {
   RegisterError,
   RegisterUserAlerts,
   User,
-} from "../../utils/interfaces/SKG";
+} from "../../utils/interfaces/Users";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function Login() {

@@ -5,13 +5,17 @@ import { createContext, useContext, useState } from "react";
 import users from "../services/api/skg/users.api.service";
 import { getCookie, setCookie } from "../utils/defaults";
 import {
+  GetUserAlert,
   LoginSuccess,
+  LoginUserAlerts,
   LoginUserProps,
+  RegisterUserAlerts,
   RegisterUserResponse,
   User,
   UserDeleteSuccess,
   UserUpdateSuccess,
-} from "../utils/interfaces/SKG";
+} from "../utils/interfaces/Users";
+import { ID } from "../utils/interfaces/interfaces";
 
 interface ResponseType {
   isLoading: boolean;
@@ -39,10 +43,10 @@ const UserContext = createContext({
   },
   deleteMyself: async () => {},
   getUsers: async () => {},
-  getUserById: async (id: string) => {
+  getUserById: async (id: ID) => {
     id;
   },
-  updateUser: async (id: string, props: User) => {
+  updateUser: async (id: ID, props: User) => {
     {
       id;
     }
@@ -50,7 +54,7 @@ const UserContext = createContext({
       props;
     }
   },
-  deleteUser: async (id: string) => {
+  deleteUser: async (id: ID) => {
     id;
   },
   registerUserData: null as ResponseType | null,
@@ -103,7 +107,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       ) {
         setRegisterUserData({
           isLoading: false,
-          response: response.response.data,
+          response: response.response.data as RegisterUserAlerts,
         });
       } else {
         setRegisterUserData({
@@ -120,12 +124,12 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const loginUser = async (data: LoginUserProps) => {    try {
+  const loginUser = async (data: LoginUserProps) => {
+    try {
       setLoginUserData({
         isLoading: true,
       });
       const response = await users.LoginUser(data);
-
       if (
         response &&
         "response" in response &&
@@ -135,7 +139,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       ) {
         setLoginUserData({
           isLoading: false,
-          response: response.response.data,
+          response: response.response.data as LoginUserAlerts,
         });
       } else {
         setLoginUserData({
@@ -168,7 +172,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       ) {
         setGetMyselfData({
           isLoading: false,
-          response: response.response.data,
+          response: response.response.data as GetUserAlert,
         });
       } else {
         setGetMyselfData({
@@ -269,7 +273,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const getUserById = async (id: string) => {
+  const getUserById = async (id: ID) => {
     try {
       setGetUserByIdData({
         isLoading: true,
@@ -284,7 +288,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       ) {
         setGetUserByIdData({
           isLoading: false,
-          response: response.response.data,
+          response: response.response.data as GetUserAlert,
         });
       } else {
         setGetUserByIdData({
@@ -298,7 +302,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const updateUser = async (id: string, data: User) => {
+  const updateUser = async (id: ID, data: User) => {
     try {
       setUpdateUserData({
         isLoading: true,
@@ -327,7 +331,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const deleteUser = async (id: string) => {
+  const deleteUser = async (id: ID) => {
     try {
       setDeleteUserData({
         isLoading: true,
