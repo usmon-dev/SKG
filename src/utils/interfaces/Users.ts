@@ -1,35 +1,3 @@
-export interface SecretKeyGeneratorResponse {
-  secretKey: string;
-}
-
-export interface CreateSecretKeyProp {
-  title: string;
-}
-export interface CreateSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
-
-export interface GetSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
-
-export interface UpdateSecretKeyProp {
-  title: string;
-}
-
-export interface UpdateSecretKeyResponse {
-  id: string;
-  title: string;
-  secretKey: string;
-  userId: string;
-}
-
 export interface User {
   id?: string;
   name: string;
@@ -72,10 +40,34 @@ export interface LoginError {
   error: unknown;
 }
 
+export interface GetUsersError {
+  message: "Error fetching users";
+  error: unknown;
+}
+
+export interface GetUserAlert {
+  message: "User not found";
+}
+
+export interface GetUserError {
+  message: "Error fetching user";
+  error: unknown;
+}
+
 export interface UserUpdateSuccess {
   message: "User updated successfully";
 }
 
+export interface UserUpdateError {
+  message: "Error updating user";
+  error: unknown;
+}
+
 export interface UserDeleteSuccess {
   message: "User deleted successfully";
+}
+
+export interface UserDeleteError {
+  message: "Error deleting user";
+  error: unknown;
 }

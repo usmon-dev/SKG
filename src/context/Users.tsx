@@ -11,7 +11,7 @@ import {
   User,
   UserDeleteSuccess,
   UserUpdateSuccess,
-} from "../utils/interfaces";
+} from "../utils/interfaces/SKG";
 
 interface ResponseType {
   isLoading: boolean;

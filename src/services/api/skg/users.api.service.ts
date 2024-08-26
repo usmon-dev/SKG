@@ -1,4 +1,8 @@
+import { ID } from "../../../utils/interfaces/interfaces";
 import {
+  GetUserAlert,
+  GetUserError,
+  GetUsersError,
   LoginError,
   LoginSuccess,
   LoginUserAlerts,
@@ -7,49 +11,52 @@ import {
   RegisterUserAlerts,
   RegisterUserResponse,
   User,
-} from "../../../utils/interfaces";
+  UserDeleteError,
+  UserDeleteSuccess,
+  UserUpdateError,
+  UserUpdateSuccess,
+} from "../../../utils/interfaces/Users";
 import { api } from "../api";
 
 const users = {
   RegisterUser: async (props: User) => {
     try {
       const response = await api.post("/users/register", props);
-      return response.data as RegisterUserResponse | RegisterUserAlerts;
+      return response.data as RegisterUserResponse;
     } catch (error) {
-      return error as RegisterError;
+      return error as RegisterError | RegisterUserAlerts;
     }
   },
-  LoginUser: async (data: LoginUserProps) => {
+  LoginUser: async (props: LoginUserProps) => {
     try {
-      const response = await api.post("/users/login", data);
-      return response.data as LoginSuccess | LoginUserAlerts;
+      const response = await api.post("/users/login", props);
+      return response.data as LoginSuccess;
     } catch (error) {
-      console.log(error);
-      return error as LoginError;
+      return error as LoginError | LoginUserAlerts;
     }
   },
   GetMyself: async () => {
     try {
       const response = await api.get("/users/myself");
-      return response.data as User | { message: "User not found" };
+      return response.data as User;
     } catch (error) {
-      return error as { message: "Error fetching user" };
+      return error as GetUserError | GetUserAlert;
     }
   },
-  UpdateMyself: async (data: User) => {
+  UpdateMyself: async (props: User) => {
     try {
-      const response = await api.put("/users/myself", data);
-      return response.data as { message: "User updated successfully" };
+      const response = await api.put("/users/myself", props);
+      return response.data as UserUpdateSuccess;
     } catch (error) {
-      return error as { message: "Error updating user" };
+      return error as UserUpdateError;
     }
   },
   DeleteMySelf: async () => {
     try {
       const response = await api.delete("/users/myself");
-      return response.data as { message: "User deleted successfully" };
+      return response.data as UserDeleteSuccess;
     } catch (error) {
-      return error as { message: "Error deleting user" };
+      return error as UserDeleteError;
     }
   },
   GetUsers: async () => {
@@ -57,31 +64,31 @@ const users = {
       const response = await api.get("/users");
       return response.data as User[];
     } catch (error) {
-      return error as { message: "Error fetching users" };
+      return error as GetUsersError;
     }
   },
-  GetUserById: async (id: string) => {
+  GetUserById: async (id: ID) => {
     try {
       const response = await api.get(`/users/${id}`);
-      return response.data as User | { message: "User not found" };
+      return response.data as User;
     } catch (error) {
-      return error as { message: "Error fetching user" };
+      return error as GetUserError | GetUserAlert;
     }
   },
-  UpdateUser: async (id: string, data: User) => {
+  UpdateUser: async (id: ID, props: User) => {
     try {
-      const response = await api.put(`/users/${id}`, data);
-      return response.data as { message: "User updated successfully" };
+      const response = await api.put(`/users/${id}`, props);
+      return response.data as UserUpdateSuccess;
     } catch (error) {
-      return error as { message: "Error updating user" };
+      return error as UserUpdateError;
     }
   },
-  DeleteUser: async (id: string) => {
+  DeleteUser: async (id: ID) => {
     try {
       const response = await api.delete(`/users/${id}`);
-      return response.data as { message: "User deleted successfully" };
+      return response.data as UserDeleteSuccess;
     } catch (error) {
-      return error as { message: "Error deleting user" };
+      return error as UserDeleteError;
     }
   },
 };

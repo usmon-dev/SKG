@@ -9,7 +9,7 @@ import {
   SecretKeyGeneratorResponse,
   UpdateSecretKeyProp,
   UpdateSecretKeyResponse,
-} from "../utils/interfaces";
+} from "../utils/interfaces/SKG";
 
 interface ResponseType {
   isLoading: boolean;
