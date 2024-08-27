@@ -22,12 +22,17 @@ interface ResponseType {
   data?:
     | User
     | User[]
-    | { message: string }
     | RegisterUserResponse
     | LoginSuccess
+    | UserUpdateSuccess
+    | UserDeleteSuccess
+    | null;
+  response?:
+    | RegisterUserAlerts
+    | LoginUserAlerts
+    | GetUserAlert
     | null
-    | [];
-  response?: unknown | null;
+    | unknown;
 }
 
 const UserContext = createContext({

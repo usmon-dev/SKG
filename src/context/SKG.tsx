@@ -5,8 +5,11 @@ import skg from "../services/api/skg/skg.api.service";
 import {
   CreateSecretKeyProp,
   CreateSecretKeyResponse,
+  DeleteSecretKeyResponse,
   GetSecretKeyResponse,
   SecretKeyGeneratorResponse,
+  SecretKeyNotFound,
+  UnauthorizedAccess,
   UpdateSecretKeyProp,
   UpdateSecretKeyResponse,
 } from "../utils/interfaces/SKG";
@@ -14,15 +17,15 @@ import { ID } from "../utils/interfaces/interfaces";
 
 interface ResponseType {
   isLoading: boolean;
-  data:
+  data?:
     | SecretKeyGeneratorResponse
     | CreateSecretKeyResponse
     | GetSecretKeyResponse
     | GetSecretKeyResponse[]
     | UpdateSecretKeyResponse
-    | { message: string }
-    | null
-    | [];
+    | DeleteSecretKeyResponse
+    | null;
+  response?: SecretKeyNotFound | UnauthorizedAccess;
 }
 
 const SKGContext = createContext({
@@ -135,13 +138,24 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
         data: null,
       });
       const response = await skg.GetSecretKey(props);
-      if (response) {
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
+        setGetSecretKeyData({
+          response: response.response.data as
+            | SecretKeyNotFound
+            | UnauthorizedAccess,
+          isLoading: false,
+        });
+      } else {
         setGetSecretKeyData({
           data: response as GetSecretKeyResponse,
           isLoading: false,
         });
-      } else {
-        throw new Error("Invalid response from GetSecretKey");
       }
     } catch (err) {
       console.error("Error generating secret key:", err);
@@ -158,13 +172,24 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
         data: null,
       });
       const response = await skg.UpdateSecretKey(props.id, props.data);
-      if (response) {
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
+        setUpdateSecretKeyData({
+          response: response.response.data as
+            | SecretKeyNotFound
+            | UnauthorizedAccess,
+          isLoading: false,
+        });
+      } else {
         setUpdateSecretKeyData({
           data: response as UpdateSecretKeyResponse,
           isLoading: false,
         });
-      } else {
-        throw new Error("Invalid response from UpdateSecretKey");
       }
     } catch (err) {
       console.error("Error generating secret key:", err);
@@ -178,13 +203,24 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
         data: null,
       });
       const response = await skg.DeleteSecretKey(props);
-      if (response) {
+      if (
+        response &&
+        "response" in response &&
+        typeof response.response === "object" &&
+        response.response !== null &&
+        "data" in response.response
+      ) {
         setDeleteSecretKeyData({
-          data: response as { message: string },
+          response: response.response.data as
+            | SecretKeyNotFound
+            | UnauthorizedAccess,
           isLoading: false,
         });
       } else {
-        throw new Error("Invalid response from DeleteSecretKey");
+        setDeleteSecretKeyData({
+          data: response as DeleteSecretKeyResponse,
+          isLoading: false,
+        });
       }
     } catch (err) {
       console.error("Error generating secret key:", err);
