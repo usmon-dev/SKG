@@ -53,7 +53,7 @@ function LoggedProfileMenu() {
             <Skeleton variant="text" />
           </ListItem>
         ) : (
-          <ListItem>
+          <ListItem sx={{ margin: "0 auto" }}>
             {user?.name} {user?.surname}
           </ListItem>
         )}

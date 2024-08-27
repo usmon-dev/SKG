@@ -101,6 +101,7 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
           data: response as CreateSecretKeyResponse,
           isLoading: false,
         });
+        getSecretKeys();
       } else {
         throw new Error("Invalid response from CreateSecretKey");
       }
@@ -190,6 +191,7 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
           data: response as UpdateSecretKeyResponse,
           isLoading: false,
         });
+        getSecretKeys();
       }
     } catch (err) {
       console.error("Error generating secret key:", err);
@@ -221,6 +223,7 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
           data: response as DeleteSecretKeyResponse,
           isLoading: false,
         });
+        getSecretKeys();
       }
     } catch (err) {
       console.error("Error generating secret key:", err);

@@ -11,11 +11,10 @@ import {
 } from "@mui/icons-material";
 import { useSKG } from "../../context/SKG";
 import { useState } from "react";
+import { copyToClipboard } from "../../utils/defaults";
+import { SecretKeyGeneratorResponse } from "../../utils/interfaces/SKG";
 
-function SKG() {
-  interface SecretKeyGeneratorResponse {
-    secretKey: string;
-  }
+function SKGwithoutAcc() {
   const { secretKeyGenerator, secretKeyGeneratorData } = useSKG();
   const [secretKey, setSecretKey] = useState<SecretKeyGeneratorResponse>({
     secretKey: "",
@@ -39,7 +38,7 @@ function SKG() {
   };
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(secretKey.secretKey);
+    copyToClipboard(secretKey.secretKey);
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);
@@ -98,11 +97,11 @@ function SKG() {
         placeholder="Tap Generate to generate a secret key"
       />
       <Typography>
-        Do you want to save your secret key? <Link href="#">Sign in</Link> or{" "}
-        <Link href="#">Sign up</Link>
+        Do you want to save your secret key? <Link href="/login">Sign in</Link>{" "}
+        or <Link href="/register">Sign up</Link>
       </Typography>
     </Stack>
   );
 }
 
-export default SKG;
+export default SKGwithoutAcc;

@@ -27,3 +27,11 @@ export const isLoggedIn = getCookie("authToken").trim() !== "";
 export const reload = () => {
   window.location.reload();
 }
+
+export const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+};
+
+export const redirect = (url: string) => {
+  window.location.href = url;
+};
