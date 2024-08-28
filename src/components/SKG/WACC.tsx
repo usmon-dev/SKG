@@ -36,7 +36,7 @@ import {
 } from "../../utils/interfaces/SKG";
 import { copyToClipboard } from "../../utils/defaults";
 
-function CreatedSecretKeyModal(props: { modalOpen: boolean }) {
+function CreatedSecretKeyModal(props: { open: boolean; setOpen: any }) {
   const {
     createSecretKeyData,
     deleteSecretKey,
@@ -55,7 +55,6 @@ function CreatedSecretKeyModal(props: { modalOpen: boolean }) {
     secretKey: data?.secretKey,
     userId: data?.userId,
   });
-  const [open, setOpen] = useState(props.modalOpen);
   const [showSecret, setShowSecret] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -76,7 +75,7 @@ function CreatedSecretKeyModal(props: { modalOpen: boolean }) {
   };
 
   const handleClose = () => {
-    setOpen(false);
+    props.setOpen(false);
   };
 
   const disabled =
@@ -89,11 +88,10 @@ function CreatedSecretKeyModal(props: { modalOpen: boolean }) {
     if (dskData?.message == "Secret key deleted successfully" || uskData) {
       handleClose();
     }
-    setOpen(props.modalOpen);
-  }, [data]);
+  }, [data, dskData, uskData]);
 
   return (
-    <Modal onClose={handleClose} open={open}>
+    <Modal onClose={handleClose} open={props.open}>
       <ModalDialog
         sx={{
           width: "600px",
@@ -149,7 +147,7 @@ function CreatedSecretKeyModal(props: { modalOpen: boolean }) {
               <Tooltip title="You can't undo this action" placement="bottom">
                 <Button
                   disabled={disabled}
-                  onClick={() => deleteSecretKey(cskData)}
+                  onClick={() => deleteSecretKey({ id: cskData.id })}
                   color="danger"
                 >
                   Delete
@@ -163,10 +161,12 @@ function CreatedSecretKeyModal(props: { modalOpen: boolean }) {
                 <Button
                   disabled={disabled}
                   onClick={() =>
-                    updateSecretKey({
-                      id: createSecretKeyData?.data as CreateSecretKeyResponse,
-                      data: cskData,
-                    })
+                    updateSecretKey(
+                      { id: cskData.id },
+                      {
+                        title: cskData.title,
+                      }
+                    )
                   }
                 >
                   Edit
@@ -191,6 +191,7 @@ function SKGwithAcc() {
   const [skgData, setSkgData] = useState<CreateSecretKeyProp>({
     title: "",
   });
+  const [cskOpen, setCskOpen] = useState(false);
 
   const data = getSecretKeysData?.data as GetSecretKeyResponse[];
   const isEmpty = data?.length === 0;
@@ -205,7 +206,10 @@ function SKGwithAcc() {
 
   useEffect(() => {
     getSecretKeys();
-  }, []);
+    if (createSecretKeyData?.data) {
+      setCskOpen(true);
+    }
+  }, [createSecretKeyData]);
   return (
     <Stack
       spacing={7}
@@ -218,9 +222,7 @@ function SKGwithAcc() {
         margin: "0 auto",
       }}
     >
-      <CreatedSecretKeyModal
-        modalOpen={createSecretKeyData?.data ? true : false}
-      />
+      <CreatedSecretKeyModal open={cskOpen} setOpen={setCskOpen} />
       <Typography level="h1">Secret Key Generator</Typography>
       <Input
         name="title"

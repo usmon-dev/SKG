@@ -43,8 +43,9 @@ const SKGContext = createContext({
   getSecretKey: async (props: ID) => {
     props;
   },
-  updateSecretKey: async (props: { id: ID; data: UpdateSecretKeyProp }) => {
-    props;
+  updateSecretKey: async (params: ID, data: UpdateSecretKeyProp) => {
+    params;
+    data;
   },
   deleteSecretKey: async (id: ID) => {
     id;
@@ -89,13 +90,13 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
       setSecretKeyGeneratorData(null);
     }
   };
-  const createSecretKey = async (props: CreateSecretKeyProp) => {
+  const createSecretKey = async (data: CreateSecretKeyProp) => {
     try {
       setCreateSecretKeyData({
         isLoading: true,
         data: null,
       });
-      const response = await skg.CreateSecretKey(props);
+      const response = await skg.CreateSecretKey(data);
       if (response) {
         setCreateSecretKeyData({
           data: response as CreateSecretKeyResponse,
@@ -132,13 +133,13 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const getSecretKey = async (props: ID) => {
+  const getSecretKey = async (params: ID) => {
     try {
       setGetSecretKeyData({
         isLoading: true,
         data: null,
       });
-      const response = await skg.GetSecretKey(props);
+      const response = await skg.GetSecretKey(params);
       if (
         response &&
         "response" in response &&
@@ -163,16 +164,13 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
       setGetSecretKeyData(null);
     }
   };
-  const updateSecretKey = async (props: {
-    id: ID;
-    data: UpdateSecretKeyProp;
-  }) => {
+  const updateSecretKey = async (params: ID, data: UpdateSecretKeyProp) => {
     try {
       setUpdateSecretKeyData({
         isLoading: true,
         data: null,
       });
-      const response = await skg.UpdateSecretKey(props.id, props.data);
+      const response = await skg.UpdateSecretKey(params, data);
       if (
         response &&
         "response" in response &&
@@ -198,13 +196,13 @@ const SKGProvider = ({ children }: { children: React.ReactNode }) => {
       setUpdateSecretKeyData(null);
     }
   };
-  const deleteSecretKey = async (props: ID) => {
+  const deleteSecretKey = async (params: ID) => {
     try {
       setDeleteSecretKeyData({
         isLoading: true,
         data: null,
       });
-      const response = await skg.DeleteSecretKey(props);
+      const response = await skg.DeleteSecretKey(params);
       if (
         response &&
         "response" in response &&

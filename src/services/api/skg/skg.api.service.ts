@@ -38,9 +38,9 @@ const skg = {
       return error as InternalServerError;
     }
   },
-  GetSecretKey: async (id: ID) => {
+  GetSecretKey: async (params: ID) => {
     try {
-      const response = await api.get(`/skg/${id}`);
+      const response = await api.get(`/skg/${params.id}`);
       return response.data as GetSecretKeyResponse;
     } catch (error) {
       return error as
@@ -49,9 +49,9 @@ const skg = {
         | UnauthorizedAccess;
     }
   },
-  UpdateSecretKey: async (id: ID, data: UpdateSecretKeyProp) => {
+  UpdateSecretKey: async (params: ID, data: UpdateSecretKeyProp) => {
     try {
-      const response = await api.put(`/skg/${id}`, data);
+      const response = await api.put(`/skg/${params.id}`, data);
       return response.data as UpdateSecretKeyResponse;
     } catch (error) {
       return error as
@@ -60,9 +60,9 @@ const skg = {
         | UnauthorizedAccess;
     }
   },
-  DeleteSecretKey: async (id: ID) => {
+  DeleteSecretKey: async (params: ID) => {
     try {
-      const response = await api.delete(`/skg/${id}`);
+      const response = await api.delete(`/skg/${params.id}`);
       return response.data as DeleteSecretKeyResponse;
     } catch (error) {
       return error as
