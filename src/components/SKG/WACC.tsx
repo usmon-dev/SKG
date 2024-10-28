@@ -54,6 +54,7 @@ function CreatedSecretKeyModal(props: { open: boolean; setOpen: any }) {
     title: data?.title,
     secretKey: data?.secretKey,
     userId: data?.userId,
+    createdAt: data?.createdAt,
   });
   const [showSecret, setShowSecret] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState(false);
@@ -137,6 +138,9 @@ function CreatedSecretKeyModal(props: { open: boolean; setOpen: any }) {
               <FormHelperText>
                 You can actually see this secret key later
               </FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormHelperText>Shown as {cskData.createdAt}</FormHelperText>
             </FormControl>
             <Box
               sx={{
@@ -245,17 +249,20 @@ function SKGwithAcc() {
         startDecorator={<Key />}
       />
       {isEmpty && <Typography level="body-lg">No Secret Keys Found</Typography>}
-      {data?.map((skg) => (
-        <Box
-          key={skg.id}
-          sx={{
-            width: "500px",
-            "@media (max-width: 600px)": {
-              width: "90%",
-            },
-          }}
-        >
-          <Box
+      <Box
+        sx={{
+          width: "500px",
+          "@media (max-width: 600px)": {
+            width: "90%",
+          },
+        }}
+      >
+        {data?.map((skg) => (
+          <Button
+            key={skg.id}
+            variant="outlined"
+            color="neutral"
+            fullWidth
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -263,11 +270,10 @@ function SKGwithAcc() {
             }}
           >
             <Typography level="body-lg">{skg.title}</Typography>
-            <Typography level="body-lg">{skg.secretKey}</Typography>
-          </Box>
-          <Divider />
-        </Box>
-      ))}
+            <Typography level="body-lg">{skg.createdAt}</Typography>
+          </Button>
+        ))}
+      </Box>
     </Stack>
   );
 }

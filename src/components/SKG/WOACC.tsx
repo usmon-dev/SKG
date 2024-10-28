@@ -24,9 +24,11 @@ function SKGwithoutAcc() {
 
   const handleSecretKeyGenerator = async () => {
     try {
+      console.log("Generating secret key...");
       await secretKeyGenerator();
       const data = secretKeyGeneratorData?.data;
       if (data && "secretKey" in data) {
+        console.log("Secret key generated successfully:", data.secretKey);
         setSecretKey(data as SecretKeyGeneratorResponse);
         setIsCopied(false);
       } else {
@@ -36,7 +38,6 @@ function SKGwithoutAcc() {
       console.error("Error generating secret key:", error);
     }
   };
-
   const handleCopyToClipboard = () => {
     copyToClipboard(secretKey.secretKey);
     setIsCopied(true);
@@ -66,7 +67,7 @@ function SKGwithoutAcc() {
         endDecorator={
           !secretKey?.secretKey ? (
             <Button
-              onClick={handleSecretKeyGenerator}
+              onClick={() => handleSecretKeyGenerator()}
               disabled={secretKeyGeneratorData?.isLoading}
             >
               {secretKeyGeneratorData?.isLoading ? "Loading..." : "Generate"}

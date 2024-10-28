@@ -23,6 +23,7 @@ export interface CreateSecretKeyResponse {
   title: string;
   secretKey: string;
   userId: string;
+  createdAt: string;
 }
 
 export interface GetSecretKeyResponse {
@@ -30,6 +31,7 @@ export interface GetSecretKeyResponse {
   title: string;
   secretKey: string;
   userId: string;
+  createdAt: string;
 }
 
 export interface UpdateSecretKeyProp {
@@ -41,6 +43,7 @@ export interface UpdateSecretKeyResponse {
   title: string;
   secretKey: string;
   userId: string;
+  createdAt: string;
 }
 
 export interface DeleteSecretKeyResponse {
