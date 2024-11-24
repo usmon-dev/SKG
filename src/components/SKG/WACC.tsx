@@ -355,21 +355,23 @@ function SKGwithAcc() {
           </>
         )}
         {data?.map((skg) => (
-          <Button
-            key={skg.id}
-            variant="outlined"
-            color="neutral"
-            fullWidth
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "10px",
-            }}
-          >
-            <Typography level="body-lg">{skg.title}</Typography>
-            <Typography level="body-lg">{skg.createdAt}</Typography>
-          </Button>
+          <Tooltip title="Coming Soon!">
+            <Button
+              key={skg.id}
+              variant="outlined"
+              color="neutral"
+              fullWidth
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: "10px",
+              }}
+            >
+              <Typography level="body-lg">{skg.title}</Typography>
+              <Typography level="body-lg">{skg.createdAt}</Typography>
+            </Button>
+          </Tooltip>
         ))}
       </Box>
     </Stack>

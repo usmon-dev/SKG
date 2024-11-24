@@ -10,6 +10,7 @@ import {
   MenuButton,
   MenuItem,
   Skeleton,
+  Tooltip,
 } from "@mui/joy";
 import { Settings, LogoutRounded, Person } from "@mui/icons-material";
 import { useUser } from "../../../context/Users";
@@ -76,28 +77,32 @@ function LoggedProfileMenu() {
             margin: "0px 15px",
           }}
         />
-
-        <MenuItem>
-          <ListItemDecorator>
-            <Settings />
-          </ListItemDecorator>
-          Settings
-        </MenuItem>
+        <Tooltip title="Coming soon">
+          <MenuItem>
+            <ListItemDecorator>
+              <Settings />
+            </ListItemDecorator>
+            Settings
+          </MenuItem>
+        </Tooltip>
         <MenuItem onClick={() => deleteCookie("authToken")} color="danger">
           <ListItemDecorator>
             <LogoutRounded />
           </ListItemDecorator>
           Log out
         </MenuItem>
+
         {user?.isAdmin && (
           <>
             <Divider />
-            <MenuItem>
-              <ListItemDecorator>
-                <Person />
-              </ListItemDecorator>
-              Admin
-            </MenuItem>
+            <Tooltip title="Coming soon">
+              <MenuItem>
+                <ListItemDecorator>
+                  <Person />
+                </ListItemDecorator>
+                Admin
+              </MenuItem>
+            </Tooltip>
           </>
         )}
       </Menu>
