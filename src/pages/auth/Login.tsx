@@ -10,6 +10,7 @@ import {
   Sheet,
   Typography,
   IconButton,
+  Link,
 } from "@mui/joy";
 import { useUser } from "../../context/Users";
 import { useEffect, useState } from "react";
@@ -57,6 +58,11 @@ function Login() {
         justifyContent: "center",
         alignItems: "center",
         height: "90vh",
+        width: "100%",
+        "@media (max-width: 768px)": {
+          width: "90%",
+          margin: "0 auto",
+        },
       }}
     >
       <Sheet
@@ -132,6 +138,15 @@ function Login() {
             {loginUserData?.isLoading ? "Loading..." : "Sign In"}
           </Button>
         </form>
+        <Typography>
+          Don't have an account? Just{" "}
+          <Link
+            disabled={loginUserData?.isLoading}
+            onClick={() => navigate("/register")}
+          >
+            Sign Up
+          </Link>
+        </Typography>
       </Sheet>
     </Box>
   );

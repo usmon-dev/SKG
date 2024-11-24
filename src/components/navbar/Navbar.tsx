@@ -1,17 +1,25 @@
-"use client"
+"use client";
 
-import { Typography } from "@mui/joy"
-import ProfileMenu from "./profileMenu"
+import { Typography } from "@mui/joy";
+import ProfileMenu from "./profileMenu";
+import { redirect } from "../../utils/defaults";
 
 function Navbar() {
   return (
     <div className="navbar">
-        <Typography level="h1" sx={{
-          color: "#f5f5f5"
-        }}>SKG</Typography>
-        <ProfileMenu />
+      <Typography
+        onClick={() => redirect("/")}
+        level="h1"
+        sx={{
+          cursor: "pointer",
+          color: "#f5f5f5",
+        }}
+      >
+        SKG
+      </Typography>
+      <ProfileMenu />
     </div>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

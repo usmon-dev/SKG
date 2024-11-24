@@ -21,6 +21,7 @@ import {
   Modal,
   ModalClose,
   ModalDialog,
+  Skeleton,
   Stack,
   Tooltip,
   Typography,
@@ -198,7 +199,7 @@ function SKGwithAcc() {
   const [cskOpen, setCskOpen] = useState(false);
 
   const data = getSecretKeysData?.data as GetSecretKeyResponse[];
-  const isEmpty = data?.length === 0;
+  const isEmpty = !getSecretKeysData?.isLoading && data?.length === 0;
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -219,7 +220,6 @@ function SKGwithAcc() {
       spacing={7}
       sx={{
         width: "90%",
-        height: "60vh",
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
@@ -257,6 +257,103 @@ function SKGwithAcc() {
           },
         }}
       >
+        {getSecretKeysData?.isLoading && (
+          <>
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+              }}
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+              }}
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+              }}
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+                opacity: "0.8",
+              }}
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+                opacity: "0.6",
+              }}
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+                opacity: "0.4",
+              }}
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+                opacity: "0.2",
+              }}
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                display: "flex",
+                width: "100%",
+                height: "40px",
+                justifyContent: "space-between",
+                marginTop: "10px",
+                opacity: "0.1",
+              }}
+            />
+          </>
+        )}
         {data?.map((skg) => (
           <Button
             key={skg.id}
@@ -267,6 +364,7 @@ function SKGwithAcc() {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              marginTop: "10px",
             }}
           >
             <Typography level="body-lg">{skg.title}</Typography>

@@ -10,6 +10,7 @@ import {
   Sheet,
   Typography,
   IconButton,
+  Link,
 } from "@mui/joy";
 import { useUser } from "../../context/Users";
 import { useEffect, useState } from "react";
@@ -22,7 +23,7 @@ import {
 } from "../../utils/interfaces/Users";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-function Login() {
+function Register() {
   const { registerUser, registerUserData } = useUser();
   const [userData, setUserData] = useState<User>({
     username: "",
@@ -76,12 +77,17 @@ function Login() {
         justifyContent: "center",
         alignItems: "center",
         height: "90vh",
+        width: "100%",
+        "@media (max-width: 768px)": {
+          width: "90%",
+          margin: "0 auto",
+        },
       }}
     >
       <Sheet
         sx={{
           width: "500px",
-          height: "max-content",
+          height: "650px",
           boxShadow: "0 0 20px rgba(0, 0, 0, 0.1)",
           borderRadius: "20px",
           padding: "20px",
@@ -220,9 +226,18 @@ function Login() {
             {registerUserData?.isLoading ? "Loading..." : "Sign Up"}
           </Button>
         </form>
+        <Typography>
+          Already have an account?{" "}
+          <Link
+            disabled={registerUserData?.isLoading}
+            onClick={() => navigate("/login")}
+          >
+            Sign In
+          </Link>
+        </Typography>
       </Sheet>
     </Box>
   );
 }
 
-export default Login;
+export default Register;

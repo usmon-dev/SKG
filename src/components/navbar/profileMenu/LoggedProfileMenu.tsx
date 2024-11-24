@@ -38,10 +38,24 @@ function LoggedProfileMenu() {
           transition: "all 0.2s ease-in-out",
         }}
       >
-        <Avatar>
-          {user?.name.slice(0, 1)}
-          {user?.surname.slice(0, 1)}
-        </Avatar>
+        {getMyselfData?.isLoading ? (
+          <Avatar
+            sx={{
+              width: "44px",
+              height: "44px",
+            }}
+          />
+        ) : (
+          <Avatar
+            sx={{
+              width: "44px",
+              height: "44px",
+            }}
+          >
+            {user?.name.slice(0, 1)}
+            {user?.surname.slice(0, 1)}
+          </Avatar>
+        )}
       </MenuButton>
       <Menu
         sx={{
