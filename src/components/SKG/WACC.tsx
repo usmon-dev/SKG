@@ -366,9 +366,13 @@ function SKGwithAcc() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginTop: "10px",
+                "@media (max-width: 600px)": {
+                  display: "flex",
+                  flexDirection: "column",
+                }
               }}
             >
-              <Typography level="body-lg">{skg.title}</Typography>
+              <Typography level="body-lg">{skg.title.slice(0, 30)}</Typography>
               <Typography level="body-lg">{skg.createdAt}</Typography>
             </Button>
           </Tooltip>
